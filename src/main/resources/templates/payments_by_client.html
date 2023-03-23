@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payments by Client</title>
+    <link th:rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
+</head>
+<body>
+<h1 th:text="|Cheques from customer: ${client.fullName}|"></h1>
+<table class = "table table-dark table-striped">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Date</th>
+        <th>Cheque ID</th>
+        <th>Payment Sum</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="pay : ${client.payments}">
+        <td th:text="${pay.getId()}"></td>
+        <td th:text="${pay.getDate()}"></td>
+        <td th:text="${pay.getChequeId()}"></td>
+        <td th:text="${pay.getPaymentSum()}"></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+
+<script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.16.1-1/umd/popper.min.js}"></script>
+
+</html>

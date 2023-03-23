@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
+</head>
+<body>
+<a href="../clients"> back </a> <br/>
+<h1 th:text="|Client page: ${client.fullName}|"></h1>
+</body>
+<img th:src="@{${client.getPhoto()}}" width="250" height="250"/>
+<h2>Update Client</h2>
+<form action="/update_client" th:object="${client}" method="post">
+    <input type="hidden" id="client_ID" name="id" th:value="*{id}">
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="client_fullName">Full Name:</label>
+        <div class="col-sm-10">
+            <input type="text" id="client_fullName" name="fullName" th:value="*{fullName}" /><br/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="client_address">Address:</label>
+        <div class="col-sm-10">
+            <input type="text" id="client_address" name="address" th:value="*{address}"/><br/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="client_photo">Photo URL:</label>
+        <div class="col-sm-10">
+            <input type="text" id="client_photo" name="photo" th:value="*{photo}"/><br/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="client_email">Email:</label>
+        <div class="col-sm-10">
+            <input type="text" id="client_email" name="email" th:value="*{email}"/><br/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="client_phoneNumber">Phone Number:</label>
+        <div class="col-sm-10">
+            <input type="text" id="client_phoneNumber" name="phoneNumber" th:value="*{phoneNumber}"/><br/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="client_rating">Rating:</label>
+        <div class="col-sm-10">
+            <select id="client_rating" name="rating" th:field="*{rating}">
+                <option value="1" th:selected="*{rating == 1}">1</option>
+                <option value="2" th:selected="*{rating == 2}">2</option>
+                <option value="3" th:selected="*{rating == 3}">3</option>
+                <option value="4" th:selected="*{rating == 4}">4</option>
+                <option value="5" th:selected="*{rating == 5}">5</option>
+            </select><br/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-sm-2 col-form-label" for="client_driverCategory">Driver License:</label>
+        <div class="col-sm-10">
+            <select id="client_driverCategory" name="driverCategory" th:field="*{driverCategory}">
+                <option value="A" th:selected="*{driverCategory == 'A'}">A</option>
+                <option value="B" th:selected="*{driverCategory == 'B'}">B</option>
+                <option value="C" th:selected="*{driverCategory == 'C'}">C</option>
+                <option value="D" th:selected="*{driverCategory == 'D'}">D</option>
+            </select><br/>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <input type="submit" value="Update" class="btn btn-primary"/>
+    </div>
+</form>
+
+<script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.16.1-1/umd/popper.min.js}"></script>
+
+</html>

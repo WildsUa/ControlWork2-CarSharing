@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Clients</title>
+    <link rel="stylesheet" type="text/css" href="styles/two_frames.css">
+    <link th:rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
+</head>
+<body>
+<a href="cars"> Cars </a> <br/>
+<a href="orders"> Orders </a> <br/>
+    <h1>Clients List</h1>
+    <div>
+        <table id="clients" class="table table-striped table-hover table-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Photo
+                    </th>
+                    <th>
+                        Full Name
+                    </th>
+                    <th>
+                        Address
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Phone Number
+                    </th>
+                    <th>
+                        Driver Category
+                    </th>
+                    <th>
+                        Rating
+                    </th>
+                    <th>
+                        Orders
+                    </th>
+                    <th>
+                        Payments
+                    </th>
+                    <th>
+                        Edit
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr th:each="cli : ${clients}">
+                <td th:text = "${cli.getId()}"></td>
+                <td><img th:src="@{${cli.getPhoto()}}" width="50" height="50"/></td>
+                <td th:text = "${cli.getFullName()}"  th:href="@{client/{id}(id=${cli.id})}"></td>
+                <td th:text = "${cli.getAddress()}"></td>
+                <td th:text = "${cli.getEmail()}"></td>
+                <td th:text = "${cli.getPhoneNumber()}"></td>
+                <td th:text = "${cli.getDriverCategory()}"></td>
+                <td th:text = "${cli.getRating()}"></td>
+                <td><a th:href="@{client_orders/{id}(id=${cli.id})}">Orders </a> </td>
+                <td><a th:href="@{client_payments/{id}(id=${cli.id})}">Payments </a> </td>
+                <td><a th:href="@{client/{id}(id=${cli.id})}">Edit </a> </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h2>Create New Client</h2>
+        <form action="add_client" th:object="${clients}" method="post">
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="client_fullName">Full Name:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="client_fullName" name="fullName"/><br/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="client_address">Address:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="client_address" name="address"/><br/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="client_photo">Photo URL:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="client_photo" name="photo"/><br/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="client_email">Email:</label>
+                <div class="col-sm-10">
+                    <input type="text" id="client_email" name="email"/><br/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="client_phoneNumber">Phone Number:</label>
+                <div class="col-sm-10">
+                     <input type="text" id="client_phoneNumber" name="phoneNumber"/><br/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="client_rating">Rating:</label>
+                <div class="col-sm-10">
+                    <select id="client_rating" name="rating">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select><br/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="client_driverCategory">Driver License:</label>
+                <div class="col-sm-10">
+                    <select id="client_driverCategory" name="driverCategory">
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select><br/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+            <input type="submit" value="Add" class="btn btn-primary"/>
+            </div>
+        </form>
+
+     </div>
+</body>
+
+<script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.16.1-1/umd/popper.min.js}"></script>
+
+</html>

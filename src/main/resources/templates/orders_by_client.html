@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders by client</title>
+    <link th:rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
+</head>
+<body>
+<h1 th:text="|Orders for customer: ${client.fullName}|"></h1>
+<table class = "table table-dark table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Car</th>
+            <th>Rent Start</th>
+            <th>Rent End</th>
+            <th>Rent Cost</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr th:each= "ord : ${client.orders}">
+            <td th:text="${ord.getId()}"></td>
+            <td th:text="${ord.getCar().getCarType()}"></td>
+            <td th:text="${ord.getStartDate()}"></td>
+            <td th:text="${ord.getEndDate()}"></td>
+            <td th:text="${ord.getCost()}"></td>
+        </tr>
+    </tbody>
+</table>
+</body>
+
+<script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.16.1-1/umd/popper.min.js}"></script>
+
+</html>

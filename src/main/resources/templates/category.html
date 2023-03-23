@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link th:rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
+</head>
+<body>
+<a href="../categories"> <img src="images/Back.png" height="30" width="30"> </a> <br/>
+<h1 th:text="|Update categoty: ${category.getName()}|"></h1>
+<div>
+    <h2>Create New Category</h2>
+    <form action="add_category" th:object="${category}" method="post">
+        <input type="hidden" id="category_id" name="id" th:value="*{id}"/><br/>
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="category_Name">Category Name:</label>
+            <div class="col-sm-10">
+                <input type="text" id="category_Name" name="name" th:value="*{name}"/><br/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="category_RequiredLicense">Required Driver License:</label>
+            <div class="col-sm-10">
+                <select id="category_RequiredLicense" name="requiredCategory" th:field="*{requiredCategory}">
+                    <option value="A" th:selected="*{requiredCategory == 'A'}">A</option>
+                    <option value="B" th:selected="*{requiredCategory == 'B'}">B</option>
+                    <option value="C" th:selected="*{requiredCategory == 'C'}">C</option>
+                    <option value="D" th:selected="*{requiredCategory == 'D'}">D</option>
+                </select><br/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="category_RequiredRating">Required Rating::</label>
+            <div class="col-sm-10">
+                <select id="category_RequiredRating" name="requiredRating" th:field="*{requiredRating}">
+                    <option value="1" th:selected="*{requiredRating == 1}">1</option>
+                    <option value="2" th:selected="*{requiredRating == 2}">2</option>
+                    <option value="3" th:selected="*{requiredRating == 3}">3</option>
+                    <option value="4" th:selected="*{requiredRating == 4}">4</option>
+                    <option value="5" th:selected="*{requiredRating == 5}">5</option>
+                    <option value="6" th:selected="*{requiredRating == 6}">Service</option>
+                </select><br/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-sm-2 col-form-label" for="pricePerHour">Price Per Hour UAH:</label>
+            <div class="col-sm-10">
+                <input type="number" id="pricePerHour" name="rentalRatePerHour" placeholder="10.00" step="0.01" th:value="*{rentalRatePerHour}"/><br/>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <input type="submit" value="Add" class="btn btn-primary"/>
+        </div>
+    </form>
+</div>
+
+</body>
+
+<script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/popper.js/1.16.1-1/umd/popper.min.js}"></script>
+
+</html>
