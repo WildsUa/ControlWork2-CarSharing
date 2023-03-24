@@ -13,7 +13,7 @@
         <p>Clients</p>
     </a>
     <a href="cars" class="image-link">
-        <img src="images/Car.png" alt="Orders">
+        <img src="images/Car.png" alt="Cars">
         <p>Cars</p>
     </a>
 </div>
@@ -115,7 +115,7 @@
 
         <br/>
         <div th:if="${message}" th:class="${message.getWebclass()}">
-            <label id="messageOrders" th:text="${message.getText()}" th:hidden="${message.getVisible()}"></label>
+            <label id="messageOrders" th:text="${message.getText()}"></label>
         </div>
     </div>
 </div>

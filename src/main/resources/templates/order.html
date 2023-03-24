@@ -77,14 +77,14 @@
 
 
             <div class="form-group row">
-                <input type="submit" value="Add" class="btn btn-primary"/>
+                <input type="submit" value="Update" class="btn btn-primary"/>
                 <label class="col-form-label" for="calculate_button">Calculate recommended Price:</label>
                 <button id="calculate_button" type="submit" name="action" value="calculate_cost" class="btn btn-secondary">Calculate cost</button>
             </div>
         </form>
 
         <div th:if="${message}" th:class="${message.getWebclass()}">
-            <label id="messageOrder" th:text="${message.getText()}" th:hidden="${message.getVisible()}"></label>
+            <label id="messageOrder" th:text="${message.getText()}"></label>
         </div>
 
     </div>

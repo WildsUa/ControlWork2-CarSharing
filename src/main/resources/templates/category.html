@@ -6,11 +6,14 @@
     <link th:rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
 </head>
 <body>
-<a href="../categories"> <img src="images/Back.png" height="30" width="30"> </a> <br/>
+<a href="../categories" class="image-link">
+    <img src="../images/Back.png" height="50" width="50" alt="Back">
+    <p>Back</p>
+</a>
 <h1 th:text="|Update categoty: ${category.getName()}|"></h1>
 <div>
     <h2>Create New Category</h2>
-    <form action="add_category" th:object="${category}" method="post">
+    <form action="/update_category" th:object="${category}" method="post">
         <input type="hidden" id="category_id" name="id" th:value="*{id}"/><br/>
         <div class="form-group row">
             <label class="col-sm-2 col-form-label" for="category_Name">Category Name:</label>
@@ -53,7 +56,10 @@
         </div>
 
         <div class="form-group row">
-            <input type="submit" value="Add" class="btn btn-primary"/>
+            <input type="submit" value="Update" class="btn btn-primary"/>
+        </div>
+        <div th:if="${message}" th:class="${message.getWebclass()}">
+            <label id="messageCategory" th:text="${message.getText()}" ></label>
         </div>
     </form>
 </div>

@@ -38,13 +38,9 @@ public class SharingController {
     public String getCars (Model model){
         List<Car> cars = carRepository.findAll();
         List<Category> categories = categoryRepository.findAll();
-        Message message = (Message) model.getAttribute("message");
-        if (message == null ) message = new Message("","true","");
-        //Message message = new Message("", "true", "");
 
         model.addAttribute("cars", cars);
         model.addAttribute("categories", categories);
-        model.addAttribute("message", message);
         return "cars";
     }
 
@@ -62,12 +58,9 @@ public class SharingController {
         List<Car> availableCars = carRepository.findFreeCars();
         List<Client> availableClients = clientRepository.findFreeClients();
 
-        //Message message = new Message("111111111","false", "alert alert-warning");
-
         model.addAttribute("orders", orders);
         model.addAttribute("availableCars", availableCars);
         model.addAttribute("availableClients", availableClients);
-        //model.addAttribute("message", message);
         return "orders";
     }
 
@@ -110,6 +103,7 @@ public class SharingController {
         if (car.isEmpty()) {
             return "redirect:/cars";
         }
+
         List<Category> categories = categoryRepository.findAll();
         model.addAttribute("car", car.get());
         model.addAttribute("categories", categories);
@@ -124,13 +118,9 @@ public class SharingController {
         if (order.isEmpty()) {
             return "redirect:/orders";
         }
-        List<Car> availableCars = carRepository.findAll();
-        List<Client> availableClients = clientRepository.findAll();
 
         notCompleted = (order.get().getEndDate() != null) && (order.get().getCost() != null);
 
-        model.addAttribute("availableCars",availableCars);
-        model.addAttribute("availableClients",availableClients);
         model.addAttribute("order", order.get());
         model.addAttribute("notCompleted", notCompleted);
 
@@ -153,9 +143,9 @@ public class SharingController {
 
         Optional<Car> car = carRepository.findById(id);
         if (car.isEmpty()) {
-            message = new Message("No such car in the list", "false", "alert alert-warning");
+            message = new Message("No such car in the list", "alert alert-warning");
         } else {
-            message = new Message("Car was deleted successful", "false", "alert alert-success");
+            message = new Message("Car was deleted successful", "alert alert-success");
             carRepository.deleteById(id);
         }
         redirectAttributes.addFlashAttribute("message", message);
@@ -166,21 +156,33 @@ public class SharingController {
     //Post functionality
     //new records
     @PostMapping("/add_client")
-    public String addClient(@ModelAttribute ( value = "clients" ) Client client){
+    public String addClient(@ModelAttribute ( value = "clients" ) Client client, RedirectAttributes redirectAttributes){
+        Message message = new EntityValidator().validateClient(client);
 
-        clientRepository.save(client);
+        if (message.getWebclass().equals("alert alert-success"))
+            clientRepository.save(client);
+
+        redirectAttributes.addFlashAttribute("message", message);
         return"redirect:/clients";
     }
     @PostMapping("/add_car")
     public String addCar(@ModelAttribute ( value = "cars" ) Car car, RedirectAttributes redirectAttributes){
-        carRepository.save(car);
-        Message message = new Message("Car was added successful", "false", "alert alert-success");
+        Message message = new EntityValidator().validateCar(car);
+
+        if (message.getWebclass().equals("alert alert-success"))
+            carRepository.save(car);
+
         redirectAttributes.addFlashAttribute("message", message);
         return"redirect:/cars";
     }
     @PostMapping("/add_category")
-    public String addCategory(@ModelAttribute ( value = "categories" ) Category category){
-        categoryRepository.save(category);
+    public String addCategory(@ModelAttribute ( value = "categories" ) Category category, RedirectAttributes redirectAttributes){
+        Message message = new EntityValidator().validateCategory(category);
+
+        if (message.getWebclass().equals("alert alert-success"))
+            categoryRepository.save(category);
+
+        redirectAttributes.addFlashAttribute("message", message);
         return"redirect:/categories";
     }
     @PostMapping("/add_order")
@@ -194,9 +196,9 @@ public class SharingController {
             if (new EntityValidator().validateOrdersCalc(order)){
                 price = new TimeCalculator().timeCost(order.getStartDate(),
                         order.getEndDate(),order.getCar().getCategory().getRentalRatePerHour());
-                message = new Message("Recommended price is " + price, "false","alert alert-success");
+                message = new Message("Recommended price is " + price,"alert alert-success");
             } else {
-                message = new Message ("Enter valid Start and End dates to use calculator","false", "alert alert-warning");
+                message = new Message ("Enter valid Start and End dates to use calculator", "alert alert-warning");
             }
         } else {
             message = new EntityValidator().validateOrder(order);
@@ -212,52 +214,70 @@ public class SharingController {
 
     //update record
     @PostMapping("/update_client")
-    public String updateClient(@ModelAttribute ( value = "client" ) Client client){
-        clientRepository.save(client);
+    public String updateClient(@ModelAttribute ( value = "client" ) Client client, RedirectAttributes redirectAttributes){
+        Message message = new EntityValidator().validateClient(client);
+
+        if (message.getWebclass().equals("alert alert-success"))
+            clientRepository.save(client);
+
+        redirectAttributes.addFlashAttribute("message", message);
         return"redirect:/client/" + client.getId();
     }
 
     @PostMapping("/update_car")
-    public String updateCar(@ModelAttribute ( value = "cars" ) Car car){
-        carRepository.save(car);
-        return"redirect:/cars";
+    public String updateCar(@ModelAttribute ( value = "cars" ) Car car, RedirectAttributes redirectAttributes){
+        Message message = new EntityValidator().validateCar(car);
+        String link;
+        if (message.getWebclass().equals("alert alert-success")) {
+            carRepository.save(car);
+            link ="redirect:/cars";
+        } else
+            link = "redirect:/car/" + car.getId();
+
+        redirectAttributes.addFlashAttribute("message", message);
+        return link;
     }
 
     @PostMapping("/update_category")
-    public String updateCategory(@ModelAttribute ( value = "categories" ) Category category){
-        categoryRepository.save(category);
-        return"redirect:/categories";
+    public String updateCategory(@ModelAttribute ( value = "categories" ) Category category, RedirectAttributes redirectAttributes){
+        Message message = new EntityValidator().validateCategory(category);
+        String link;
+        if (message.getWebclass().equals("alert alert-success")) {
+            categoryRepository.save(category);
+            link ="redirect:/categories";
+        } else
+            link = "redirect:/category/" + category.getId();
+
+        redirectAttributes.addFlashAttribute("message", message);
+        return link;
     }
 
     @PostMapping("/update_order")
     public String updateCategory(@ModelAttribute ( value = "orders" ) Order order,
                 RedirectAttributes redirectAttributes, @RequestParam(name="action", required=false) String action){
         double price;
-
+        String link;
         Message message;
 
         if("calculate_cost".equals(action)){
             if (new EntityValidator().validateOrdersCalc(order)){
                 price = new TimeCalculator().timeCost(order.getStartDate(), order.getEndDate(),order.getCar().getCategory().getRentalRatePerHour());
-                message = new Message("Recomended price is " + price, "false","alert alert-success");
+                message = new Message("Recomended price is " + price,"alert alert-success");
             } else {
-                message = new Message ("Enter valid Start and End dates to use calculator","false", "alert alert-warning");
+                message = new Message ("Enter valid Start and End dates to use calculator", "alert alert-warning");
             }
-
-            redirectAttributes.addFlashAttribute("message", message);
-            return "redirect:/order/"+order.getId();
+            link = "redirect:/order/"+order.getId();
         } else {
             message = new EntityValidator().validateOrderUpdate(order);
 
             if (message.getWebclass().equals("alert alert-success")) {
                 orderRepository.save(order);
-                redirectAttributes.addFlashAttribute("message", message);
-                return "redirect:/orders";
-            } else {
-                redirectAttributes.addFlashAttribute("message", message);
-                return "redirect:/order/" + order.getId();
-            }
+                link = "redirect:/orders";
+            } else
+                link = "redirect:/order/" + order.getId();
         }
+        redirectAttributes.addFlashAttribute("message", message);
+        return link;
     }
 
 }

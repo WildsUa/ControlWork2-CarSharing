@@ -11,6 +11,5 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Message {
     private String text;
-    private String visible;
     private String webclass;
 }

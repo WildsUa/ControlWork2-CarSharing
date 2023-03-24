@@ -6,7 +6,10 @@
     <link th:rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
 </head>
 <body>
-<a href="../clients"> back </a> <br/>
+<a href="../clients" class="image-link">
+    <img src="../images/Back.png" height="50" width="50" alt="Back">
+    <p>Back</p>
+</a>
 <h1 th:text="|Client page: ${client.fullName}|"></h1>
 </body>
 <img th:src="@{${client.getPhoto()}}" width="250" height="250"/>
@@ -75,6 +78,10 @@
 
     <div class="form-group row">
         <input type="submit" value="Update" class="btn btn-primary"/>
+    </div>
+
+    <div th:if="${message}" th:class="${message.getWebclass()}">
+        <label id="messageCategory" th:text="${message.getText()}" ></label>
     </div>
 </form>
 

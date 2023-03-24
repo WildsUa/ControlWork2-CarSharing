@@ -7,10 +7,13 @@
     <link th:rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
 </head>
 <body>
-<a href="/cars"> <img src="Back.png" height="30" width="30"> </a> <br/>
+<a href="cars" class="image-link">
+    <img src="images/Car.png" alt="Orders">
+    <p>Cars</p>
+</a>
 <h1>Available categories</h1>
 <div>
-    <table id="cars" class="table table-striped table-hover table-sm">
+    <table id="categories_table" class="table table-striped table-hover table-sm">
         <thead  class="table-dark">
         <tr>
             <td>
@@ -26,7 +29,7 @@
                 Required rating
             </td>
             <td>
-                Default Price $/h
+                Default Price ₴/h
             </td>
             <td>
                 Edit
@@ -90,6 +93,10 @@
 
         <div class="form-group row">
             <input type="submit" value="Add" class="btn btn-primary"/>
+        </div>
+
+        <div th:if="${message}" th:class="${message.getWebclass()}">
+            <label id="messageCategories" th:text="${message.getText()}" ></label>
         </div>
     </form>
 </div>
