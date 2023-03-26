@@ -44,7 +44,7 @@ public class SharingController {
         return "cars";
     }
 
-    @GetMapping("/categories")
+    @GetMapping("/_categories")
     public String getCategories (Model model){
         List<Category> categories = categoryRepository.findAll();
         model.addAttribute("categories", categories);
@@ -127,7 +127,7 @@ public class SharingController {
         return "order";
     }
 
-    @GetMapping("/category/{id}")
+    @GetMapping("/_category/{id}")
     public String categoryPage(@PathVariable("id") int id, Model model) {
         Optional<Category> category = categoryRepository.findById(id);
         if (category.isEmpty()) {
@@ -175,7 +175,7 @@ public class SharingController {
         redirectAttributes.addFlashAttribute("message", message);
         return"redirect:/cars";
     }
-    @PostMapping("/add_category")
+    @PostMapping("/_add_category")
     public String addCategory(@ModelAttribute ( value = "categories" ) Category category, RedirectAttributes redirectAttributes){
         Message message = new EntityValidator().validateCategory(category);
 
@@ -186,7 +186,7 @@ public class SharingController {
         return"redirect:/categories";
     }
     @PostMapping("/add_order")
-    public String addCategory(@ModelAttribute ( value = "orders" ) Order order
+    public String addOrder(@ModelAttribute ( value = "orders" ) Order order
             , RedirectAttributes redirectAttributes, @RequestParam(name="action", required=false) String action){
         double price;
 
@@ -197,9 +197,11 @@ public class SharingController {
                 price = new TimeCalculator().timeCost(order.getStartDate(),
                         order.getEndDate(),order.getCar().getCategory().getRentalRatePerHour());
                 message = new Message("Recommended price is " + price,"alert alert-success");
+                order.setCost(price);
             } else {
                 message = new Message ("Enter valid Start and End dates to use calculator", "alert alert-warning");
             }
+            redirectAttributes.addFlashAttribute ("orders", order);
         } else {
             message = new EntityValidator().validateOrder(order);
 
@@ -208,7 +210,7 @@ public class SharingController {
         }
 
         redirectAttributes.addFlashAttribute("message", message);
-        return"redirect:/orders";
+        return"redirect:/orders?";
     }
 
 
@@ -238,7 +240,7 @@ public class SharingController {
         return link;
     }
 
-    @PostMapping("/update_category")
+    @PostMapping("/_update_category")
     public String updateCategory(@ModelAttribute ( value = "categories" ) Category category, RedirectAttributes redirectAttributes){
         Message message = new EntityValidator().validateCategory(category);
         String link;
@@ -253,7 +255,7 @@ public class SharingController {
     }
 
     @PostMapping("/update_order")
-    public String updateCategory(@ModelAttribute ( value = "orders" ) Order order,
+    public String updateOrder(@ModelAttribute ( value = "orders" ) Order order,
                 RedirectAttributes redirectAttributes, @RequestParam(name="action", required=false) String action){
         double price;
         String link;

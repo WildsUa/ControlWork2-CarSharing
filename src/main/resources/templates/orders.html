@@ -63,7 +63,7 @@
 
     <div class="left-frame">
         <h2>Create new Order</h2>
-        <form action="add_order" th:object="${orders}" method="post">
+        <form id= "orders_form" action="add_order" th:object="${orders}" method="post">
 
             <div class="form-group row">
                 <label class="col-sm-2 col-form-label" for="order_client">Client:</label>
