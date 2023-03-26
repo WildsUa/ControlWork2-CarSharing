@@ -1,4 +1,4 @@
-package com.example.controlwork2carsharing.controller;
+package com.example.controlwork2carsharing.controllers;
 
 import com.example.controlwork2carsharing.calculator.TimeCalculator;
 import com.example.controlwork2carsharing.entities.Car;
@@ -27,14 +27,14 @@ public class SharingController {
     PaymentRepository paymentRepository;
 
     //Main pages
-    @GetMapping("/clients")
+    @GetMapping("/_clients")
     public String getClients (Model model){
         List<Client> clients = clientRepository.findAll();
         model.addAttribute("clients", clients);
         return "clients";
     }
 
-    @GetMapping("/cars")
+    @GetMapping("/_cars")
     public String getCars (Model model){
         List<Car> cars = carRepository.findAll();
         List<Category> categories = categoryRepository.findAll();
@@ -51,7 +51,7 @@ public class SharingController {
         return "categories";
     }
 
-    @GetMapping("/orders")
+    @GetMapping("/_orders")
     public String getOrders (Model model){
         List<Order> orders = orderRepository.findAll();
 
@@ -65,7 +65,7 @@ public class SharingController {
     }
 
     //Sub Lists pages
-    @GetMapping("/client_orders/{id}")
+    @GetMapping("/_client_orders/{id}")
     public String ordersByClients(@PathVariable("id") int id, Model model) {
         Optional<Client> client = clientRepository.findById(id);
         if (client.isEmpty()) {
@@ -75,7 +75,7 @@ public class SharingController {
         model.addAttribute("orders", client.get().getOrders());
         return "orders_by_client";
     }
-    @GetMapping("/client_payments/{id}")
+    @GetMapping("/_client_payments/{id}")
     public String paymentByClients(@PathVariable("id") int id, Model model) {
         Optional<Client> client = clientRepository.findById(id);
         if (client.isEmpty()) {
@@ -87,7 +87,7 @@ public class SharingController {
     }
 
     //Entity pages
-    @GetMapping("/client/{id}")
+    @GetMapping("/_client/{id}")
     public String clientPage(@PathVariable("id") int id, Model model) {
         Optional<Client> client = clientRepository.findById(id);
         if (client.isEmpty()) {
@@ -97,7 +97,7 @@ public class SharingController {
         return "client";
     }
 
-    @GetMapping("/car/{id}")
+    @GetMapping("/_car/{id}")
     public String carPage(@PathVariable("id") int id, Model model) {
         Optional<Car> car = carRepository.findById(id);
         if (car.isEmpty()) {
@@ -110,7 +110,7 @@ public class SharingController {
         return "car";
     }
 
-    @GetMapping("/order/{id}")
+    @GetMapping("/_order/{id}")
     public String orderPage(@PathVariable("id") int id, Model model) {
         boolean notCompleted;
 
@@ -137,7 +137,7 @@ public class SharingController {
         return "category";
     }
 
-    @GetMapping("/car_remove/{id}")
+    @GetMapping("/_car_remove/{id}")
     public String deleteCar(@PathVariable("id") int id, RedirectAttributes redirectAttributes) {
         Message message;
 
@@ -155,7 +155,7 @@ public class SharingController {
 
     //Post functionality
     //new records
-    @PostMapping("/add_client")
+    @PostMapping("/_add_client")
     public String addClient(@ModelAttribute ( value = "clients" ) Client client, RedirectAttributes redirectAttributes){
         Message message = new EntityValidator().validateClient(client);
 
@@ -165,7 +165,7 @@ public class SharingController {
         redirectAttributes.addFlashAttribute("message", message);
         return"redirect:/clients";
     }
-    @PostMapping("/add_car")
+    @PostMapping("/_add_car")
     public String addCar(@ModelAttribute ( value = "cars" ) Car car, RedirectAttributes redirectAttributes){
         Message message = new EntityValidator().validateCar(car);
 
@@ -185,7 +185,7 @@ public class SharingController {
         redirectAttributes.addFlashAttribute("message", message);
         return"redirect:/categories";
     }
-    @PostMapping("/add_order")
+    @PostMapping("/_add_order")
     public String addOrder(@ModelAttribute ( value = "orders" ) Order order
             , RedirectAttributes redirectAttributes, @RequestParam(name="action", required=false) String action){
         double price;
@@ -215,7 +215,7 @@ public class SharingController {
 
 
     //update record
-    @PostMapping("/update_client")
+    @PostMapping("/_update_client")
     public String updateClient(@ModelAttribute ( value = "client" ) Client client, RedirectAttributes redirectAttributes){
         Message message = new EntityValidator().validateClient(client);
 
@@ -226,7 +226,7 @@ public class SharingController {
         return"redirect:/client/" + client.getId();
     }
 
-    @PostMapping("/update_car")
+    @PostMapping("/_update_car")
     public String updateCar(@ModelAttribute ( value = "cars" ) Car car, RedirectAttributes redirectAttributes){
         Message message = new EntityValidator().validateCar(car);
         String link;
@@ -254,7 +254,7 @@ public class SharingController {
         return link;
     }
 
-    @PostMapping("/update_order")
+    @PostMapping("/_update_order")
     public String updateOrder(@ModelAttribute ( value = "orders" ) Order order,
                 RedirectAttributes redirectAttributes, @RequestParam(name="action", required=false) String action){
         double price;

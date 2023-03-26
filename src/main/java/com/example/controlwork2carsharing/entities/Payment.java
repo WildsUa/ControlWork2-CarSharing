@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -19,7 +18,7 @@ public class Payment {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "client_id", nullable = false)
-    private Client customer;
+    private Client client;
 
     @Column(name = "Date", nullable = false)
     private LocalDate date;
@@ -28,6 +27,6 @@ public class Payment {
     private String chequeId;
 
     @Column(name = "Payment_Sum", nullable = false, precision = 10, scale = 2)
-    private BigDecimal paymentSum;
+    private Double paymentSum;
 
 }

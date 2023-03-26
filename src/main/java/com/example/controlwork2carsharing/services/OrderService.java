@@ -2,6 +2,7 @@ package com.example.controlwork2carsharing.services;
 
 import com.example.controlwork2carsharing.entities.Order;
 import com.example.controlwork2carsharing.repositories.OrderRepository;
+import com.example.controlwork2carsharing.validators.EntityValidator;
 import com.example.controlwork2carsharing.webElements.Message;
 import org.springframework.stereotype.Service;
 
@@ -25,16 +26,21 @@ private final OrderRepository orderRepository;
     }
 
     public Message saveOrder(Order order){
-        Message result;
-        if (order.getId() == null) {
-            result = new Message("Order was added successful", "alert alert-success");
-            orderRepository.save(order);
-        } else if (this.findOrderByID(order.getId()).isEmpty()){
-            result = new Message("No such order in the list", "alert alert-warning");
-        } else {
-            result = new Message("Order was updated successful", "alert alert-success");
-            orderRepository.save(order);
+        Message result = new EntityValidator().validateOrder(order);
+
+        if (result.getWebclass().equals("alert alert-success")) {
+            if (order.getId() == null) {
+                result.setText("Order was added successful");
+                orderRepository.save(order);
+            } else if (this.findOrderByID(order.getId()).isEmpty()) {
+                result = new Message("No such order in the list", "alert alert-warning");
+            } else {
+                result.setText("Order was updated successful");
+                orderRepository.save(order);
+            }
         }
         return result;
     }
+
+
 }

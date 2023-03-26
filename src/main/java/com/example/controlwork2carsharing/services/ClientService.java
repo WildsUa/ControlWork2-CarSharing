@@ -2,6 +2,7 @@ package com.example.controlwork2carsharing.services;
 
 import com.example.controlwork2carsharing.entities.Client;
 import com.example.controlwork2carsharing.repositories.ClientRepository;
+import com.example.controlwork2carsharing.validators.EntityValidator;
 import com.example.controlwork2carsharing.webElements.Message;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +28,19 @@ public class ClientService {
         return clientRepository.findFreeClients();
     }
 
-    public Message saveClients(Client client){
-        Message result;
-        if (client.getId() == null) {
-            result = new Message("Client was added successful", "alert alert-success");
-            clientRepository.save(client);
-        } else if (this.findClientByID(client.getId()).isEmpty()){
-            result = new Message("No such clients in the list", "alert alert-warning");
-        } else {
-            result = new Message("Client was updated successful", "alert alert-success");
-            clientRepository.save(client);
+    public Message saveClient(Client client){
+        Message result = new EntityValidator().validateClient(client);
+
+        if (result.getWebclass().equals("alert alert-success")) {
+            if (client.getId() == null) {
+                result.setText("Client was added successful");
+                clientRepository.save(client);
+            } else if (this.findClientByID(client.getId()).isEmpty()) {
+                result = new Message("No such clients in the list", "alert alert-warning");
+            } else {
+                result.setText("Client was updated successful");
+                clientRepository.save(client);
+            }
         }
         return result;
     }

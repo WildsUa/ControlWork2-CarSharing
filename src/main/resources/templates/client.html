@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="styles/two_frames.css">
     <link th:rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
 </head>
 <body>
@@ -11,79 +12,156 @@
     <p>Back</p>
 </a>
 <h1 th:text="|Client page: ${client.fullName}|"></h1>
+
+<div>
+    <table id="table_customer_status">
+        <thead>
+        <tr>
+            <th>Total payed</th>
+            <th>Total orders sum</th>
+            <th>Remaining to pay</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td th:text="${payed}"></td>
+            <td th:text="${loan}"></td>
+            <td th:text="${payment.paymentSum}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<div class="frames-container">
+    <div class="left-frame">
+
+            <h2>Update Client</h2>
+            <img th:src="@{${client.getPhoto()}}" width="250" height="250"/>
+            <form action="/update_client" th:object="${client}" method="post">
+                <input type="hidden" id="client_ID" name="id" th:value="*{id}">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="client_fullName">Full Name:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="client_fullName" name="fullName" th:value="*{fullName}" /><br/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="client_address">Address:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="client_address" name="address" th:value="*{address}"/><br/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="client_photo">Photo URL:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="client_photo" name="photo" th:value="*{photo}"/><br/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="client_email">Email:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="client_email" name="email" th:value="*{email}"/><br/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="client_phoneNumber">Phone Number:</label>
+                    <div class="col-sm-10">
+                        <input type="text" id="client_phoneNumber" name="phoneNumber" th:value="*{phoneNumber}"/><br/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="client_rating">Rating:</label>
+                    <div class="col-sm-10">
+                        <select id="client_rating" name="rating" th:field="*{rating}">
+                            <option value="1" th:selected="*{rating == 1}">1</option>
+                            <option value="2" th:selected="*{rating == 2}">2</option>
+                            <option value="3" th:selected="*{rating == 3}">3</option>
+                            <option value="4" th:selected="*{rating == 4}">4</option>
+                            <option value="5" th:selected="*{rating == 5}">5</option>
+                        </select><br/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label" for="client_driverCategory">Driver License:</label>
+                    <div class="col-sm-10">
+                        <select id="client_driverCategory" name="driverCategory" th:field="*{driverCategory}">
+                            <option value="A" th:selected="*{driverCategory == 'A'}">A</option>
+                            <option value="B" th:selected="*{driverCategory == 'B'}">B</option>
+                            <option value="C" th:selected="*{driverCategory == 'C'}">C</option>
+                            <option value="D" th:selected="*{driverCategory == 'D'}">D</option>
+                        </select><br/>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <input id="update_client_button" type="submit" value="Update" class="btn btn-primary"/>
+                </div>
+
+                <div th:if="${message}" th:class="${message.getWebclass()}">
+                    <label id="messageClient" th:text="${message.getText()}" ></label>
+                </div>
+            </form>
+    </div>
+
+            <div class="right-frame">
+                <table id="table_customer_payments" class = "table table-dark table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Cheque ID</th>
+                            <th>Payment Sum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="pay : ${client.payments}">
+                            <td th:text="${pay.getId()}"></td>
+                            <td th:text="${pay.getDate()}"></td>
+                            <td th:text="${pay.getChequeId()}"></td>
+                            <td th:text="${pay.getPaymentSum()}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+
+                <form action="/add_payment" th:object="${payment}" method="post">
+                    <input type="hidden" id="paymentClient" name="customer" th:value="*{getClient}" /><br/>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="payment_date">Date:</label>
+                        <div class="col-sm-10">
+                            <input type="datetime-local" id="payment_date" name="date" th:value="*{date}" /><br/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="payment_cheque">Cheque Number:</label>
+                        <div class="col-sm-10">
+                            <input type="text" id="payment_cheque" name="chequeId"/><br/>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-2 col-form-label" for="payment_sum">Payment sum:</label>
+                        <div class="col-sm-10">
+                            <input type="number" id="payment_sum" name="paymentSum" th:value="*{paymentSum}" /><br/>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <input id="create_payment_button" type="submit" value="Create" class="btn btn-primary"/>
+                    </div>
+                </form>
+            </div>
+
+
+
+</div>
 </body>
-<img th:src="@{${client.getPhoto()}}" width="250" height="250"/>
-<h2>Update Client</h2>
-<form action="/update_client" th:object="${client}" method="post">
-    <input type="hidden" id="client_ID" name="id" th:value="*{id}">
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label" for="client_fullName">Full Name:</label>
-        <div class="col-sm-10">
-            <input type="text" id="client_fullName" name="fullName" th:value="*{fullName}" /><br/>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label" for="client_address">Address:</label>
-        <div class="col-sm-10">
-            <input type="text" id="client_address" name="address" th:value="*{address}"/><br/>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label" for="client_photo">Photo URL:</label>
-        <div class="col-sm-10">
-            <input type="text" id="client_photo" name="photo" th:value="*{photo}"/><br/>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label" for="client_email">Email:</label>
-        <div class="col-sm-10">
-            <input type="text" id="client_email" name="email" th:value="*{email}"/><br/>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label" for="client_phoneNumber">Phone Number:</label>
-        <div class="col-sm-10">
-            <input type="text" id="client_phoneNumber" name="phoneNumber" th:value="*{phoneNumber}"/><br/>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label" for="client_rating">Rating:</label>
-        <div class="col-sm-10">
-            <select id="client_rating" name="rating" th:field="*{rating}">
-                <option value="1" th:selected="*{rating == 1}">1</option>
-                <option value="2" th:selected="*{rating == 2}">2</option>
-                <option value="3" th:selected="*{rating == 3}">3</option>
-                <option value="4" th:selected="*{rating == 4}">4</option>
-                <option value="5" th:selected="*{rating == 5}">5</option>
-            </select><br/>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-sm-2 col-form-label" for="client_driverCategory">Driver License:</label>
-        <div class="col-sm-10">
-            <select id="client_driverCategory" name="driverCategory" th:field="*{driverCategory}">
-                <option value="A" th:selected="*{driverCategory == 'A'}">A</option>
-                <option value="B" th:selected="*{driverCategory == 'B'}">B</option>
-                <option value="C" th:selected="*{driverCategory == 'C'}">C</option>
-                <option value="D" th:selected="*{driverCategory == 'D'}">D</option>
-            </select><br/>
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <input type="submit" value="Update" class="btn btn-primary"/>
-    </div>
-
-    <div th:if="${message}" th:class="${message.getWebclass()}">
-        <label id="messageCategory" th:text="${message.getText()}" ></label>
-    </div>
-</form>
 
 <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/5.2.3/js/bootstrap.min.js}"></script>

@@ -1,8 +1,7 @@
-package com.example.controlwork2carsharing.controller;
+package com.example.controlwork2carsharing.controllers;
 
 import com.example.controlwork2carsharing.entities.Category;
 import com.example.controlwork2carsharing.services.CategoryService;
-import com.example.controlwork2carsharing.validators.EntityValidator;
 import com.example.controlwork2carsharing.webElements.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,10 +42,8 @@ public class CategoryController {
 
     @PostMapping("/add_category")
     public String addCategory(@ModelAttribute( value = "categories" ) Category category, RedirectAttributes redirectAttributes){
-        Message message = new EntityValidator().validateCategory(category);
 
-        if (message.getWebclass().equals("alert alert-success"))
-            message = categoryService.saveCategory(category);
+        Message message = categoryService.saveCategory(category);
 
         redirectAttributes.addFlashAttribute("message", message);
         return"redirect:/categories";
@@ -54,11 +51,10 @@ public class CategoryController {
 
     @PostMapping("/update_category")
     public String updateCategory(@ModelAttribute ( value = "categories" ) Category category, RedirectAttributes redirectAttributes){
-        Message message = new EntityValidator().validateCategory(category);
+        Message message = categoryService.saveCategory(category);
         String link;
 
         if (message.getWebclass().equals("alert alert-success")) {
-            message = categoryService.saveCategory(category);
             link ="redirect:/categories";
         } else
             link = "redirect:/category/" + category.getId();

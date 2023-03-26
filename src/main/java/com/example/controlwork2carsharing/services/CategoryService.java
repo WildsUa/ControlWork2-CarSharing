@@ -2,6 +2,7 @@ package com.example.controlwork2carsharing.services;
 
 import com.example.controlwork2carsharing.entities.Category;
 import com.example.controlwork2carsharing.repositories.CategoryRepository;
+import com.example.controlwork2carsharing.validators.EntityValidator;
 import com.example.controlwork2carsharing.webElements.Message;
 import org.springframework.stereotype.Service;
 
@@ -25,15 +26,17 @@ public class CategoryService {
     }
 
     public Message saveCategory(Category category){
-        Message result;
-        if (category.getId() == null) {
-            result = new Message("Category was added successful", "alert alert-success");
-            categoryRepository.save(category);
-        } else if (this.findCategoryByID(category.getId()).isEmpty()){
-            result = new Message("No such category in the list", "alert alert-warning");
-        } else {
-            result = new Message("Category was updated successful", "alert alert-success");
-            categoryRepository.save(category);
+        Message result = new EntityValidator().validateCategory(category);
+        if (result.getWebclass().equals("alert alert-success")) {
+            if (category.getId() == null) {
+                result.setText("Category was added successful");
+                categoryRepository.save(category);
+            } else if (this.findCategoryByID(category.getId()).isEmpty()) {
+                result = new Message("No such category in the list", "alert alert-warning");
+            } else {
+                result.setText("Category was updated successful");
+                categoryRepository.save(category);
+            }
         }
         return result;
     }
