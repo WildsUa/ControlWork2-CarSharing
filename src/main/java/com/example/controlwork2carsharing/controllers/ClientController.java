@@ -9,13 +9,11 @@ import com.example.controlwork2carsharing.webElements.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -66,7 +64,9 @@ public class ClientController {
         double payed;
         double loan;
         double requiredPayment;
-        Payment payment = new Payment();
+        LocalDate currentDate = LocalDate.now();
+        List<Payment> payments;
+
 
         if (client.isEmpty()) {
             return "redirect:/clients";
@@ -74,16 +74,16 @@ public class ClientController {
             payed = client.get().getPayments().stream().mapToDouble(Payment::getPaymentSum).sum();
             loan = client.get().getOrders().stream().mapToDouble(Order::getCost).sum();
             requiredPayment = loan - payed;
-            payment.setDate(LocalDate.now());
-            payment.setClient(client.get());
 
-            payment.setPaymentSum(requiredPayment);
+            payments = client.get().getPayments().stream().sorted(Comparator.comparing(Payment::getId)).toList();
 
             model.addAttribute("client", client.get());
-            model.addAttribute("payments", client.get().getPayments());
+            model.addAttribute("payments", payments);
             model.addAttribute("payed", payed);
             model.addAttribute("loan", loan);
-            model.addAttribute("payment", payment);
+            model.addAttribute("required", requiredPayment);
+            model.addAttribute("id", client.get().getId());
+            model.addAttribute("current_date", currentDate);
             return "client";
 
         }
@@ -97,12 +97,30 @@ public class ClientController {
     }
 
     @PostMapping("/add_payment")
-    public String addPayment(@ModelAttribute( value = "payment" ) Payment payment, RedirectAttributes redirectAttributes){
+    public String addPayment(@RequestParam(name = "client_id_e") int id,
+                             @RequestParam(name = "date") LocalDate date,
+                             @RequestParam(name = "chequeId") String chequeId,
+                             @RequestParam(name = "paymentSum") double paymentSum,
+            RedirectAttributes redirectAttributes){
+
+        Payment payment = new Payment();
+
+        payment.setClient(clientService.findClientByID(id).get());
+        payment.setDate(date);
+        payment.setChequeId(chequeId);
+        payment.setPaymentSum(paymentSum);
+
         Message message = paymentService.savePayment(payment);
 
         redirectAttributes.addFlashAttribute("message", message);
-        return"redirect:/clients";
+        return"redirect:/client/" + payment.getClient().getId();
     }
+        /*public String addPayment(@ModelAttribute( value = "payments" ) Payment payment, RedirectAttributes redirectAttributes){
+        Message message = paymentService.savePayment(payment);
+
+        redirectAttributes.addFlashAttribute("message", message);
+        return"redirect:/client/" + payment.getClient().getId();
+    }*/
 
     @PostMapping("/update_client")
     public String updateClient(@ModelAttribute ( value = "client" ) Client client, RedirectAttributes redirectAttributes){

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="styles/two_frames.css">
+    <link rel="stylesheet" type="text/css" href="../styles/four_frames.css">
     <link th:rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/5.2.3/css/bootstrap.min.css}">
 </head>
 <body>
@@ -13,29 +13,12 @@
 </a>
 <h1 th:text="|Client page: ${client.fullName}|"></h1>
 
-<div>
-    <table id="table_customer_status">
-        <thead>
-        <tr>
-            <th>Total payed</th>
-            <th>Total orders sum</th>
-            <th>Remaining to pay</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td th:text="${payed}"></td>
-            <td th:text="${loan}"></td>
-            <td th:text="${payment.paymentSum}"></td>
-        </tr>
-        </tbody>
-    </table>
-</div>
 
 
-<div class="frames-container">
-    <div class="left-frame">
 
+<div class="container">
+    <div class="row-middle">
+        <div class="col-right">
             <h2>Update Client</h2>
             <img th:src="@{${client.getPhoto()}}" width="250" height="250"/>
             <form action="/update_client" th:object="${client}" method="post">
@@ -108,9 +91,9 @@
                     <label id="messageClient" th:text="${message.getText()}" ></label>
                 </div>
             </form>
-    </div>
-
-            <div class="right-frame">
+        </div>
+        <div class="col-right">
+            <div class="col-right-top">
                 <table id="table_customer_payments" class = "table table-dark table-striped">
                     <thead>
                         <tr>
@@ -129,14 +112,15 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div class="col-right-bottom">
 
-
-                <form action="/add_payment" th:object="${payment}" method="post">
-                    <input type="hidden" id="paymentClient" name="customer" th:value="*{getClient}" /><br/>
-                    <div class="form-group row">
+                <form action="/add_payment" name="payment" th:object="${payment}" method="post">
+                    <input type="hidden" id="client_id_external" name="client_id_e" th:value="${id}" /><br/>
+                   <div class="form-group row">
                         <label class="col-sm-2 col-form-label" for="payment_date">Date:</label>
                         <div class="col-sm-10">
-                            <input type="datetime-local" id="payment_date" name="date" th:value="*{date}" /><br/>
+                            <input type="date" id="payment_date" name="date" th:value="${current_date}" /><br/>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -148,7 +132,7 @@
                     <div class="form-group row">
                         <label class="col-sm-2 col-form-label" for="payment_sum">Payment sum:</label>
                         <div class="col-sm-10">
-                            <input type="number" id="payment_sum" name="paymentSum" th:value="*{paymentSum}" /><br/>
+                            <input type="number" id="payment_sum" name="paymentSum" th:value="${required}" /><br/>
                         </div>
                     </div>
 
@@ -157,10 +141,29 @@
                     </div>
                 </form>
             </div>
-
-
+        </div>
+    </div>
+    <div class="footer">
+        <table id="table_customer_status">
+            <thead>
+            <tr>
+                <th>Total payed</th>
+                <th>Total orders sum</th>
+                <th>Remaining to pay</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td th:text="${payed}"></td>
+                <td th:text="${loan}"></td>
+                <td th:text="${required}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
 </div>
+
 </body>
 
 <script th:src="@{/webjars/jquery/3.6.3/jquery.min.js}"></script>
